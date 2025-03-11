@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 public class ApplicationController {
     @Autowired
@@ -19,5 +21,15 @@ public class ApplicationController {
         application.setStatus("Submitted");
 
         return service.submitApplication(application);
+    }
+
+    @GetMapping("/submittedApplications/{applicantId}")
+    public List<Application> getSubmittedApplication(@PathVariable("applicantId") int applicantId){
+        return service.getApplicationsByApplicant(applicantId);
+    }
+
+    @GetMapping("/recievedApplications/{jobId}")
+    public List<Application> getRecievedApplications(@PathVariable("jobId") int jobId){
+        return service.getApplicationsByJobPost(jobId);
     }
 }
