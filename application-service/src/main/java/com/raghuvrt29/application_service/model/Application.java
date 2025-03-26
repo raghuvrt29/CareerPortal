@@ -5,16 +5,18 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
+import java.util.UUID;
+
 @Entity
 public class Application {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-    private int jobPostId;
-    private int applicantId;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
+    private UUID jobPostId;
+    private UUID applicantId;
     private String status;
 
-    public Application(int id, int jobPostId, int applicantId, String status) {
+    public Application(UUID id, UUID jobPostId, UUID applicantId, String status) {
         this.id = id;
         this.jobPostId = jobPostId;
         this.applicantId = applicantId;
@@ -24,27 +26,27 @@ public class Application {
     public Application() {
     }
 
-    public int getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
-    public int getJobPostId() {
+    public UUID getJobPostId() {
         return jobPostId;
     }
 
-    public void setJobPostId(int jobPostId) {
+    public void setJobPostId(UUID jobPostId) {
         this.jobPostId = jobPostId;
     }
 
-    public int getApplicantId() {
+    public UUID getApplicantId() {
         return applicantId;
     }
 
-    public void setApplicantId(int applicantId) {
+    public void setApplicantId(UUID applicantId) {
         this.applicantId = applicantId;
     }
 

@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class ApplicationService {
@@ -17,11 +19,15 @@ public class ApplicationService {
         return "Application Submitted";
     }
 
-    public List<Application> getApplicationsByApplicant(Integer applicantId){
+    public Application getApplication(UUID applicationId) {
+        return repo.findById(applicationId).get();
+    }
+
+    public List<Application> getApplicationsByApplicant(UUID applicantId){
         return repo.findByApplicantId(applicantId);
     }
 
-    public List<Application> getApplicationsByJobPost(Integer jobPostId){
+    public List<Application> getApplicationsByJobPost(UUID jobPostId){
         return repo.findByJobPostId(jobPostId);
     }
 
@@ -30,7 +36,7 @@ public class ApplicationService {
         return repo.findById(application.getId()).orElse(new Application());
     }
 
-    public String deleteApplication(int applicationId){
+    public String deleteApplication(UUID applicationId){
         repo.deleteById(applicationId);
         return "Application deleted";
     }

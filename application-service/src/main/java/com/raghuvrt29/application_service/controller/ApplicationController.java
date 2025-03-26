@@ -3,33 +3,51 @@ package com.raghuvrt29.application_service.controller;
 import com.raghuvrt29.application_service.model.Application;
 import com.raghuvrt29.application_service.service.ApplicationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
+@EnableMethodSecurity
 public class ApplicationController {
     @Autowired
     ApplicationService service;
 
     @PostMapping("/apply/{jobPostId}")
-    public String submitApplication(@PathVariable("jobPostId") int jobPostId, @RequestParam int applicantId){
+    @PreAuthorize("hasRole('ROLE_APPLICANT')")
+    public String submitApplication(@PathVariable("jobPostId") String jobPostId, @RequestParam String applicantId){
+        UUID jobUUID = UUID.fromString(jobPostId);
+        UUID appUUID = UUID.fromString(applicantId);
         Application application = new Application();
-        application.setApplicantId(applicantId);
-        application.setJobPostId(jobPostId);
+        application.setApplicantId(appUUID);
+        application.setJobPostId(jobUUID);
         application.setStatus("Submitted");
 
         return service.submitApplication(application);
     }
 
-    @GetMapping("/submittedApplications/{applicantId}")
-    public List<Application> getSubmittedApplication(@PathVariable("applicantId") int applicantId){
-        return service.getApplicationsByApplicant(applicantId);
+    @GetMapping("application/{applicationId}")
+    @PreAuthorize("hasRole('ROLE_APPLICANT') or hasRole('ROLE_EMPLOYER')")
+    public Application getApplication(@PathVariable("applicationId") String applicationId){
+        UUID applicationUUID = UUID.fromString(applicationId);
+        return service.getApplication(applicationUUID);
     }
 
-    @GetMapping("/recievedApplications/{jobId}")
-    public List<Application> getRecievedApplications(@PathVariable("jobId") int jobId){
-        return service.getApplicationsByJobPost(jobId);
+    @GetMapping("/{applicantId}/applications")
+    @PreAuthorize("hasRole('ROLE_APPLICANT')")
+    public List<Application> getSubmittedApplication(@PathVariable("applicantId") String applicantId){
+        UUID applicantUUID = UUID.fromString(applicantId);
+        return service.getApplicationsByApplicant(applicantUUID);
+    }
+
+    @GetMapping("/post/{jobId}/applications")
+    @PreAuthorize("hasRole('ROLE_EMPLOYER')")
+    public List<Application> getReceivedApplications(@PathVariable("jobId") String jobId){
+        UUID jobUUID = UUID.fromString(jobId);
+        return service.getApplicationsByJobPost(jobUUID);
     }
 }

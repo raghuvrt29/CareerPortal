@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class UserService {
-
     @Autowired
     private UserRepo repo;
 
@@ -15,4 +14,7 @@ public class UserService {
         return repo.save(user);
     }
 
+    public User getUser(String username) {
+        return repo.findByUsername(username);
+    }
 }

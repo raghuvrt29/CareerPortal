@@ -7,10 +7,14 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -18,21 +22,23 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 
 @Service
 public class JwtService {
     private static final String ENV_FILE = "../.env";
     private static final String ENV_VARIABLE = "JWT_SECRET_KEY";
+    private static final String ROLE = "ROLE_EMPLOYER";
 
-    private String secretKey;
+    private final String secretKey;
+    private final JwtDecoder jwtDecoder;
 
     public JwtService() throws IOException {
         this.secretKey = getOrGenerateSecretKey();
+
+        SecretKeySpec secretKeySpec = (SecretKeySpec) getKey();
+        this.jwtDecoder = NimbusJwtDecoder.withSecretKey(secretKeySpec).build();
     }
 
     private String getOrGenerateSecretKey() throws IOException {
@@ -62,15 +68,20 @@ public class JwtService {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public String generateToken(String username) {
+    public String generateToken(String userId) {
         Map<String, Object> claims = new HashMap<>();
+        claims.put("role", ROLE);
 
         return Jwts.builder()
                 .setClaims(claims)
-                .setSubject(username)
+                .setSubject(userId)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 1000*60*60))
                 .signWith(getKey(), SignatureAlgorithm.HS256).compact();
+    }
+
+    public Jwt decodeToken(String token){
+        return jwtDecoder.decode(token);
     }
 
     public String extractUsername(String token) {

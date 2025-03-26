@@ -6,9 +6,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
+import java.util.UUID;
 
-@FeignClient
+@FeignClient(name = "APPLICATION-SERVICE")
 public interface ApplicationInterface {
-    @GetMapping("/submittedApplications/{applicantId}")
-    public List<Application> getSubmittedApplication(@PathVariable("applicantId") int applicantId);
+    @GetMapping("/{applicantId}/applications")
+    public List<Application> getSubmittedApplication(@PathVariable("applicantId") String applicantId);
 }
