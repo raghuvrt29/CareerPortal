@@ -1,6 +1,7 @@
 package com.raghuvrt29.application_service.controller;
 
 import com.raghuvrt29.application_service.model.Application;
+import com.raghuvrt29.application_service.model.ApplicationWrapper;
 import com.raghuvrt29.application_service.service.ApplicationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -39,15 +40,21 @@ public class ApplicationController {
 
     @GetMapping("/{applicantId}/applications")
     @PreAuthorize("hasRole('ROLE_APPLICANT')")
-    public List<Application> getSubmittedApplication(@PathVariable("applicantId") String applicantId){
+    public List<ApplicationWrapper> getSubmittedApplication(@PathVariable("applicantId") String applicantId){
         UUID applicantUUID = UUID.fromString(applicantId);
-        return service.getApplicationsByApplicant(applicantUUID);
+        List<Application> submittedApps = service.getApplicationsByApplicant(applicantUUID);
+        return submittedApps.stream()
+                .map(ApplicationWrapper::new)
+                .toList();
     }
 
     @GetMapping("/post/{jobId}/applications")
     @PreAuthorize("hasRole('ROLE_EMPLOYER')")
-    public List<Application> getReceivedApplications(@PathVariable("jobId") String jobId){
+    public List<ApplicationWrapper> getReceivedApplications(@PathVariable("jobId") String jobId){
         UUID jobUUID = UUID.fromString(jobId);
-        return service.getApplicationsByJobPost(jobUUID);
+        List<Application> receivedApps = service.getApplicationsByJobPost(jobUUID);
+        return receivedApps.stream()
+                .map(ApplicationWrapper::new)
+                .toList();
     }
 }
