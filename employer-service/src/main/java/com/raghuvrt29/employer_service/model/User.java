@@ -2,40 +2,26 @@ package com.raghuvrt29.employer_service.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.springframework.context.annotation.Configuration;
 
 import java.util.UUID;
 
 @Data
-@Table(name="Employers")
+@Table(name="employers")
 @Entity
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-    private String username;
+    @Column(nullable = false, unique = true)
+    private String email;
+    @Column(nullable = false)
+    private String employerName;
+    @Column(nullable = false)
     private String password;
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
+    @Column(nullable = false)
+    private String headOffLoc;
+    @Column(nullable = false)
+    private Integer noOfEmployees;
+    private String about;
 }

@@ -6,6 +6,9 @@ import com.raghuvrt29.application_service.service.ApplicationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,9 +23,10 @@ public class ApplicationController {
 
     @PostMapping("/apply/{jobPostId}")
     @PreAuthorize("hasRole('ROLE_APPLICANT')")
-    public String submitApplication(@PathVariable("jobPostId") String jobPostId, @RequestParam String applicantId){
+    public String submitApplication(@PathVariable("jobPostId") String jobPostId){
+        JwtAuthenticationToken authToken = (JwtAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
         UUID jobUUID = UUID.fromString(jobPostId);
-        UUID appUUID = UUID.fromString(applicantId);
+        UUID appUUID = UUID.fromString(authToken.getName());
         Application application = new Application();
         application.setApplicantId(appUUID);
         application.setJobPostId(jobUUID);
@@ -40,7 +44,7 @@ public class ApplicationController {
 
     @GetMapping("/{applicantId}/applications")
     @PreAuthorize("hasRole('ROLE_APPLICANT')")
-    public List<ApplicationWrapper> getSubmittedApplication(@PathVariable("applicantId") String applicantId){
+    public List<ApplicationWrapper> getSubmittedApplications(@PathVariable("applicantId") String applicantId){
         UUID applicantUUID = UUID.fromString(applicantId);
         List<Application> submittedApps = service.getApplicationsByApplicant(applicantUUID);
         return submittedApps.stream()

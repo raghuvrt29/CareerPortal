@@ -40,14 +40,14 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public String login(@RequestParam("username") String username, @RequestParam("password") String password){
+    public String login(@RequestParam("userEmail") String userEmail, @RequestParam("password") String password){
         try {
-            User user = service.getUser(username);
+            User user = service.getUserByEmail(userEmail);
             Authentication authentication = authenticationManager
                     .authenticate(new UsernamePasswordAuthenticationToken(user.getId().toString(), password));
 
             if(authentication.isAuthenticated()){
-                return jwtService.generateToken(user.getId().toString());
+                return jwtService.generateToken(user.getId().toString(), user.getEmployerName());
             }
             else{
                 return "Login failed";

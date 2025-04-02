@@ -10,5 +10,5 @@ import java.util.List;
 @FeignClient(name = "APPLICATION-SERVICE")
 public interface ApplicationInterface {
     @GetMapping("/{applicantId}/applications")
-    public List<ApplicationWrapper> getSubmittedApplication(@PathVariable("applicantId") String applicantId);
+    public List<ApplicationWrapper> getSubmittedApplications(@PathVariable("applicantId") String applicantId);
 }

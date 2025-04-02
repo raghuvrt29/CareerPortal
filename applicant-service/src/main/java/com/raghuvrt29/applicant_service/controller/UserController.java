@@ -14,6 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -61,10 +62,13 @@ public class UserController {
     @GetMapping("/applications")
     @PreAuthorize("hasRole('ROLE_APPLICANT')")
     public List<ApplicationWrapper> myApplications(){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
-
-        UUID userUUID = service.getUser(username).getId();
-        return applicationInterface.getSubmittedApplication(userUUID.toString());
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String userUUID = authentication.getName();
+            return applicationInterface.getSubmittedApplications(userUUID);
+        } catch (Exception e){
+            System.out.println(e.getMessage());
+            return new ArrayList<ApplicationWrapper>();
+        }
     }
 }
