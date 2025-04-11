@@ -11,6 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -48,12 +49,17 @@ public class JobController {
     public void addJob(@RequestBody JobPostInput jobPostInput){
         try {
             JwtAuthenticationToken authToken = (JwtAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+
             JobPost jobPost = new JobPost();
-            jobPost.setPostProfile(jobPostInput.getPostProfile());
-            jobPost.setPostDesc(jobPostInput.getPostDesc());
-            jobPost.setReqExperience(jobPostInput.getReqExperience());
-            jobPost.setPostTechStack(jobPostInput.getPostTechStack());
+            jobPost.setJobTitle(jobPostInput.getJobTitle());
+            jobPost.setJobDesc(jobPostInput.getJobDesc());
             jobPost.setEmployerId(UUID.fromString(authToken.getName()));
+            jobPost.setEmployerName((String) authToken.getTokenAttributes().get("name"));
+            jobPost.setLocations(jobPostInput.getLocations());
+            jobPost.setReqExperience(jobPostInput.getReqExperience());
+            jobPost.setCrOn(new Date());
+            jobPost.setDeadline(jobPostInput.getDeadline());
+
             service.addJob(jobPost);
         } catch (Exception e){
             System.out.println(e.getMessage());

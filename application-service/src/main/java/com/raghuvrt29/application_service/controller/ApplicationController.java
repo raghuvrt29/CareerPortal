@@ -1,7 +1,9 @@
 package com.raghuvrt29.application_service.controller;
 
+import com.raghuvrt29.application_service.feign.JobInterface;
 import com.raghuvrt29.application_service.model.Application;
 import com.raghuvrt29.application_service.model.ApplicationWrapper;
+import com.raghuvrt29.application_service.model.JobPost;
 import com.raghuvrt29.application_service.service.ApplicationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -12,6 +14,7 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -21,16 +24,27 @@ public class ApplicationController {
     @Autowired
     ApplicationService service;
 
+    @Autowired
+    JobInterface jobInterface;
+
     @PostMapping("/apply/{jobPostId}")
     @PreAuthorize("hasRole('ROLE_APPLICANT')")
-    public String submitApplication(@PathVariable("jobPostId") String jobPostId){
+    public String submitApplication(@PathVariable("jobId") String jobId){
         JwtAuthenticationToken authToken = (JwtAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
-        UUID jobUUID = UUID.fromString(jobPostId);
-        UUID appUUID = UUID.fromString(authToken.getName());
+
+        JobPost job = jobInterface.getJob(jobId);
+        UUID jobUUID = UUID.fromString(jobId);
+        UUID applicantUUID = UUID.fromString(authToken.getName());
+
         Application application = new Application();
-        application.setApplicantId(appUUID);
-        application.setJobPostId(jobUUID);
+        application.setJobId(jobUUID);
+        application.setJobTitle(job.getJobTitle());
+        application.setApplicantId(applicantUUID);
+        application.setApplicantName((String) authToken.getTokenAttributes().get("name"));
+        application.setEmployerId(job.getEmployerId());
+        application.setEmployerName(job.getEmployerName());
         application.setStatus("Submitted");
+        application.setCrOn(new Date());
 
         return service.submitApplication(application);
     }

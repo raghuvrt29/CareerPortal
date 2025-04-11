@@ -1,43 +1,16 @@
 package com.raghuvrt29.job_service.model;
 
+import lombok.Data;
+
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+@Data
 public class JobPostInput {
-    private String postProfile;
-    private String postDesc;
+    private String jobTitle;
+    private String jobDesc;
+    private List<String> locations;
     private int reqExperience;
-    private List<String> postTechStack;
-
-    public String getPostProfile() {
-        return postProfile;
-    }
-
-    public void setPostProfile(String postProfile) {
-        this.postProfile = postProfile;
-    }
-
-    public String getPostDesc() {
-        return postDesc;
-    }
-
-    public void setPostDesc(String postDesc) {
-        this.postDesc = postDesc;
-    }
-
-    public int getReqExperience() {
-        return reqExperience;
-    }
-
-    public void setReqExperience(int reqExperience) {
-        this.reqExperience = reqExperience;
-    }
-
-    public List<String> getPostTechStack() {
-        return postTechStack;
-    }
-
-    public void setPostTechStack(List<String> postTechStack) {
-        this.postTechStack = postTechStack;
-    }
+    private Date deadline;
 }

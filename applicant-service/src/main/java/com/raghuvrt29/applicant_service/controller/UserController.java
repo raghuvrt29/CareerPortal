@@ -49,7 +49,7 @@ public class UserController {
                     .authenticate(new UsernamePasswordAuthenticationToken(user.getId().toString(), password));
 
             if(authentication.isAuthenticated()){
-                return jwtService.generateToken(user.getId().toString());
+                return jwtService.generateToken(user.getId().toString(), user.getFirstname()+" "+user.getLastname());
             }
             else{
                 return "Login failed";

@@ -1,37 +1,22 @@
 package com.raghuvrt29.application_service.model;
 
+import lombok.Data;
+
+import java.util.UUID;
+
+@Data
 public class ApplicationWrapper {
-    private String applicationId;
-    private String jobId;
+    private UUID id;
+    private String jobTitle;
+    private String applicantName;
+    private String employerName;
     private String status;
 
-    public ApplicationWrapper(Application application){
-        this.applicationId = application.getId().toString();
-        this.jobId = application.getJobPostId().toString();
+    public ApplicationWrapper(Application application) {
+        this.id = application.getId();
+        this.jobTitle = application.getJobTitle();
+        this.applicantName = application.getApplicantName();
+        this.employerName = application.getEmployerName();
         this.status = application.getStatus();
-    }
-
-    public String getApplicationId() {
-        return applicationId;
-    }
-
-    public void setApplicationId(String applicationId) {
-        this.applicationId = applicationId;
-    }
-
-    public String getJobId() {
-        return jobId;
-    }
-
-    public void setJobId(String jobId) {
-        this.jobId = jobId;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
     }
 }

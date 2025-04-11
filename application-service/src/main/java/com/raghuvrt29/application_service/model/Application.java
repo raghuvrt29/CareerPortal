@@ -4,57 +4,27 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import java.util.Date;
 import java.util.UUID;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 public class Application {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-    private UUID jobPostId;
+    private UUID jobId;
+    private String jobTitle;
     private UUID applicantId;
+    private String applicantName;
+    private UUID employerId;
+    private String employerName;
     private String status;
-
-    public Application(UUID id, UUID jobPostId, UUID applicantId, String status) {
-        this.id = id;
-        this.jobPostId = jobPostId;
-        this.applicantId = applicantId;
-        this.status = status;
-    }
-
-    public Application() {
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public UUID getJobPostId() {
-        return jobPostId;
-    }
-
-    public void setJobPostId(UUID jobPostId) {
-        this.jobPostId = jobPostId;
-    }
-
-    public UUID getApplicantId() {
-        return applicantId;
-    }
-
-    public void setApplicantId(UUID applicantId) {
-        this.applicantId = applicantId;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
+    private Date crOn;
 }

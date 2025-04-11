@@ -1,47 +1,24 @@
 package com.raghuvrt29.job_service.model;
 
+import lombok.Data;
+
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
+
+@Data
 public class JobPostWrapper {
-    private String jobPostId;
-    private String postProfile;
-    private String employerId;
-    private Integer reqExperience;
+    private UUID postId;
+    private String jobTitle;
+    private String employerName;
+    private List<String> locations;
+    private int reqExperience;
 
-    public JobPostWrapper(JobPost jobPost){
-        this.jobPostId = jobPost.getPostId().toString();
-        this.postProfile = jobPost.getPostProfile();
-        this.employerId = jobPost.getEmployerId().toString();
-        this.reqExperience = jobPost.getReqExperience();
-    }
-
-    public String getJobPostId() {
-        return jobPostId;
-    }
-
-    public void setJobPostId(String jobPostId) {
-        this.jobPostId = jobPostId;
-    }
-
-    public String getPostProfile() {
-        return postProfile;
-    }
-
-    public void setPostProfile(String postProfile) {
-        this.postProfile = postProfile;
-    }
-
-    public String getEmployerId() {
-        return employerId;
-    }
-
-    public void setEmployerId(String employerId) {
-        this.employerId = employerId;
-    }
-
-    public Integer getReqExperience() {
-        return reqExperience;
-    }
-
-    public void setReqExperience(Integer reqExperience) {
-        this.reqExperience = reqExperience;
+    public JobPostWrapper(JobPost job) {
+        this.postId = job.getPostId();
+        this.jobTitle = job.getJobTitle();
+        this.employerName = job.getEmployerName();
+        this.locations = job.getLocations();
+        this.reqExperience = job.getReqExperience();
     }
 }
